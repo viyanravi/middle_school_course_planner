@@ -278,12 +278,9 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Rating Widget */}
-        <RatingWidget />
-
         {/* Footer note */}
         <div className="mt-14 pt-8 border-t border-border text-xs text-muted-foreground text-center">
-          Built by a student, for students. 🎓
+          Built by an elementary student, for all students.
         </div>
       </div>
     </main>
