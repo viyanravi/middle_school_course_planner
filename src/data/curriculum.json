@@ -1,0 +1,93 @@
+{
+  "school": "Middle School",
+  "district": "School District",
+  "year": "2026-2027",
+  "math": {
+    "pathways": {
+      "PathA": {
+        "6": { "name": "Math 1" },
+        "7": { "name": "Math 2" },
+        "8": { "name": "Math 3" }
+      },
+      "PathBC": {
+        "6": { "name": "Math 1-2" },
+        "7": { "name": "Math 2-3" },
+        "8": { "name": "Algebra 1", "code": "MT980", "hsCredit": true }
+      },
+      "PathD": {
+        "6": { "name": "Algebra 1", "code": "MT980", "hsCredit": true },
+        "7": { "name": "Advanced Geometry", "code": "MT982", "hsCredit": true },
+        "8": { "name": "Advanced Algebra 2/Trig", "code": "MT320", "hsCredit": true }
+      }
+    },
+    "validationRules": {
+      "PathD": [
+        "Winter i-Ready scores (4.20+)",
+        "Algebra Readiness Test (85%+)",
+        "High School Transcript disclaimer acknowledgment",
+        "Note: 8th graders on Path D typically attend high school for 1st period and require private transportation"
+      ]
+    }
+  },
+  "science": {
+    "sequences": {
+      "Standard": {
+        "6": { "name": "Life Science" },
+        "7": { "name": "Earth & Space Science" },
+        "8": { "name": "Physical Science" }
+      },
+      "Alternate": {
+        "6": { "name": "Earth & Space Science" },
+        "7": { "name": "Physical Science" },
+        "8": { "name": "Biology (HS)", "hsCredit": true }
+      }
+    },
+    "validationRules": {
+      "Alternate_6thGrade": [
+        "Level 4 scores on both i-Ready and SBA assessments (Math and Reading)",
+        "Co-registered in Math 1-2 or higher"
+      ]
+    }
+  },
+  "electives": {
+    "6thGradeChoices": {
+      "yearLongMusic": ["Band", "Orchestra", "Chorus"],
+      "trimesterRotation": ["Intro to Woods", "Art", "Computer Science 1"]
+    },
+    "advancedElectives": {
+      "Computer Science 2": {
+        "grades": [7, 8],
+        "prerequisites": ["Computer Science 1"]
+      },
+      "Computer Science 3": {
+        "grades": [7, 8],
+        "prerequisites": ["Computer Science 2"]
+      },
+      "Spanish 1A": {
+        "grades": [7],
+        "hsCredit": false
+      },
+      "Spanish 1B": {
+        "grades": [8],
+        "hsCredit": true,
+        "prerequisites": ["Spanish 1A"]
+      }
+    },
+    "validationRules": {
+      "DoubleElective": {
+        "description": "Block Double Elective selections unless the user toggles a Health/PE Waiver",
+        "condition": "Student must enroll in 'Independent Health and PE 8' to bypass the 6-period day restriction."
+      }
+    }
+  },
+  "highSchoolCredit": {
+    "courses": [
+      { "name": "Algebra 1", "code": "MT980" },
+      { "name": "Advanced Geometry", "code": "MT982" },
+      { "name": "Advanced Algebra 2/Trig", "code": "MT320" },
+      { "name": "Spanish 1", "notes": "Split into 1A (7th) and 1B (8th)" },
+      { "name": "Biology (HS)" }
+    ],
+    "policy": "Grades and credits are automatically transcribed. Families have the option to request grade removal or 'credit only' status before the end of high school."
+  }
+}
