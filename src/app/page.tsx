@@ -32,7 +32,7 @@ export default function Home() {
                       <SelectValue placeholder="Select School" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl overflow-hidden min-w-[400px]">
-                      {Object.values(SCHOOLS).map((school) => (
+                      {Object.values(SCHOOLS).filter(s => s.id !== 'ems').map((school) => (
                         <SelectItem key={school.id} value={school.id} className="cursor-pointer py-3 focus:bg-primary/5">
                           <div className="flex flex-col">
                             <span className="font-bold text-sm text-primary">{school.name}</span>

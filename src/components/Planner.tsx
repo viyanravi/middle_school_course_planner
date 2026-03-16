@@ -84,7 +84,7 @@ export function Planner({ selectedSchool = 'plms', onSchoolChange }: PlannerProp
   const getMathCourse = (grade: number) => {
     if (state.mathPathway === 'PathA') return grade === 6 ? 'Math 1' : grade === 7 ? 'Math 2' : 'Math 3';
     if (state.mathPathway === 'PathB') return grade === 6 ? 'Math 1-2' : grade === 7 ? 'Math 2-3' : 'Algebra 1 (HS)';
-    if (state.mathPathway === 'PathC') return grade === 6 ? 'Math 1-2' : grade === 7 ? 'Algebra 1 (HS)' : 'Geometry (HS)';
+    if (state.mathPathway === 'PathC') return grade === 6 ? 'Math 2-3' : grade === 7 ? 'Algebra 1 (HS)' : 'Geometry (HS)';
     return grade === 6 ? 'Algebra 1 (HS)' : grade === 7 ? 'Adv. Geometry (HS)' : 'Adv. Algebra 2/Trig (HS)';
   };
 
@@ -423,11 +423,7 @@ export function Planner({ selectedSchool = 'plms', onSchoolChange }: PlannerProp
         
       </div>
 
-      <div className="flex justify-end mt-8 pt-6">
-        <Button onClick={generatePDF} size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
-          <Download className="mr-2 w-5 h-5" /> Export Outlook to PDF
-        </Button>
-      </div>
+
 
       {/* Path D Modal */}
       <Dialog open={showPathDModal} onOpenChange={setShowPathDModal}>
@@ -483,7 +479,7 @@ function PeriodItem({ num, name, locked, highlight, active, isHsCredit, badge }:
         </div>
         <div className="flex items-center gap-1.5 flex-wrap justify-end">
           {badge && <Badge variant="outline" className="text-[10px] font-bold border-primary/20 text-primary bg-primary/5">{badge}</Badge>}
-          {highlight && <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4">Dynamic</Badge>}
+          {highlight && <span style={{ backgroundColor: '#e0e7ff', color: '#4338ca', border: '1px solid #c7d2fe', fontSize: '9px', padding: '0 6px', height: '16px', borderRadius: '9999px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', lineHeight: 1 }}>Dynamic</span>}
           {isHsCredit && <Badge className="bg-green-600/10 text-green-700 dark:text-green-400 border-green-600/20 text-[9px] px-1.5 py-0 h-4 hover:bg-green-600/20">HS Credit</Badge>}
         </div>
       </div>

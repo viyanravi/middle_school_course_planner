@@ -86,7 +86,7 @@ export function CourseSelector({
         <div className="flex bg-muted p-1 rounded-md shrink-0">
           <button
             onClick={() => handleTypeChange('year')}
-            className={`px-2 py-1 rounded-[4px] text-[10px] font-bold transition-all ${
+            className={`cursor-pointer px-2 py-1 rounded-[4px] text-[10px] font-bold transition-all ${
               type === 'year' 
                 ? 'bg-background text-primary shadow-xs' 
                 : 'text-muted-foreground/70 hover:text-foreground'
@@ -96,7 +96,7 @@ export function CourseSelector({
           </button>
           <button
             onClick={() => handleTypeChange('trimester')}
-            className={`px-2 py-1 rounded-[4px] text-[10px] font-bold transition-all ${
+            className={`cursor-pointer px-2 py-1 rounded-[4px] text-[10px] font-bold transition-all ${
               type === 'trimester' 
                 ? 'bg-background text-primary shadow-xs' 
                 : 'text-muted-foreground/70 hover:text-foreground'
@@ -111,7 +111,7 @@ export function CourseSelector({
           {type === 'year' ? (
             <div className="animate-in fade-in zoom-in-95 duration-200">
               <Select value={yearCourse} onValueChange={(val) => val && handleYearChange(val)}>
-                <SelectTrigger className="w-full h-9 text-sm font-semibold text-[#001f3f] border-none bg-secondary/10 hover:bg-secondary/20 transition-colors focus:ring-0">
+                <SelectTrigger className="cursor-pointer w-full h-9 text-sm font-semibold text-[#001f3f] border-none bg-secondary/10 hover:bg-secondary/20 transition-colors focus:ring-0">
                   <SelectValue placeholder="Select Course" />
                 </SelectTrigger>
                 <SelectContent>
@@ -131,7 +131,7 @@ export function CourseSelector({
               {Array.from({ length: trimesterCount }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-1 w-full">
                   <Select value={trimesterCourses[i]} onValueChange={(val) => val && handleTrimesterChange(i, val)}>
-                    <SelectTrigger className="w-full h-9 text-sm font-semibold text-[#001f3f] border-none bg-secondary/10 hover:bg-secondary/20 transition-colors focus:ring-0">
+                    <SelectTrigger className="cursor-pointer w-full h-9 text-sm font-semibold text-[#001f3f] border-none bg-secondary/10 hover:bg-secondary/20 transition-colors focus:ring-0">
                       <SelectValue placeholder={trimesterCount > 1 ? `T${i + 1}` : "Select Course"} />
                     </SelectTrigger>
                     <SelectContent>
