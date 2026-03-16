@@ -15,7 +15,7 @@ import { Info, AlertTriangle, Download, Lock, Calendar, Layers } from "lucide-re
 import { CourseSelector } from "./CourseSelector";
 
 // --- Types ---
-export type SchoolId = 'plms' | 'blms' | 'ems';
+export type SchoolId = 'plms' | 'ems';
 type MathPathway = 'PathA' | 'PathB' | 'PathC' | 'PathD';
 type ScienceSequence = 'Standard' | 'Alternate';
 type LAPathway = 'Regular' | 'Advanced';
@@ -31,7 +31,6 @@ export interface SchoolData {
 
 export const SCHOOLS: Record<SchoolId, SchoolData> = {
   plms: { id: 'plms', name: 'Pine Lake Middle School', district: 'Issaquah School District', motto: 'Wolverine Pride', logo: '/logos/plms.svg' },
-  blms: { id: 'blms', name: 'Beaver Lake Middle School', district: 'Issaquah School District', motto: 'Bulldog Pledge', logo: '/logos/blms.svg' },
   ems: { id: 'ems', name: 'Evergreen Middle School', district: 'Lake Washington School District', motto: 'Eagles Soar', logo: '/logos/ems.png' }
 };
 
