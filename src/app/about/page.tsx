@@ -8,6 +8,54 @@ function RatingWidget() {
   const [thumbed, setThumbed] = React.useState(false);
   const [stars, setStars] = React.useState(0);
   const [hovered, setHovered] = React.useState(0);
+  const [submitted, setSubmitted] = React.useState(false);
+
+  // Live counts from server
+  const [thumbsCount, setThumbsCount] = React.useState<number | null>(null);
+  const [starCounts, setStarCounts] = React.useState<Record<string, number> | null>(null);
+  const [totalRaters, setTotalRaters] = React.useState<number | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  // Fetch current counts on mount
+  React.useEffect(() => {
+    fetch('/api/ratings')
+      .then(r => r.json())
+      .then(data => {
+        setThumbsCount(data.thumbsCount ?? 0);
+        setStarCounts(data.starCounts ?? {});
+        setTotalRaters(data.totalRaters ?? 0);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const handleSubmit = async () => {
+    if (submitted || (!thumbed && stars === 0)) return;
+    setSubmitted(true);
+
+    try {
+      const res = await fetch('/api/ratings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ thumbed, stars: stars > 0 ? stars : undefined }),
+      });
+      const data = await res.json();
+      setThumbsCount(data.thumbsCount ?? 0);
+      setStarCounts(data.starCounts ?? {});
+      setTotalRaters(data.totalRaters ?? 0);
+    } catch { }
+  };
+
+  // Compute average star rating
+  const avgStar = (() => {
+    if (!starCounts) return null;
+    let total = 0, count = 0;
+    for (let i = 1; i <= 5; i++) {
+      total += i * (starCounts[String(i)] || 0);
+      count += starCounts[String(i)] || 0;
+    }
+    return count > 0 ? (total / count).toFixed(1) : null;
+  })();
 
   return (
     <section className="mb-12 border border-border rounded-2xl p-6 bg-card/60">
@@ -17,15 +65,17 @@ function RatingWidget() {
       <div className="flex items-center gap-6 flex-wrap">
         {/* Thumbs up */}
         <button
-          onClick={() => setThumbed(t => !t)}
+          onClick={() => { if (!submitted) setThumbed(t => !t); }}
           title="Thumbs up"
+          disabled={submitted}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
             padding: '8px 16px', borderRadius: '999px', fontWeight: 700, fontSize: '13px',
             border: thumbed ? '2px solid #001f3f' : '2px solid #e2e8f0',
             backgroundColor: thumbed ? '#001f3f' : '#f8fafc',
             color: thumbed ? '#FFB81C' : '#64748b',
-            cursor: 'pointer', transition: 'all 0.2s',
+            cursor: submitted ? 'default' : 'pointer', transition: 'all 0.2s',
+            opacity: submitted && !thumbed ? 0.5 : 1,
           }}
         >
           <span style={{ fontSize: '18px' }}>👍</span>
@@ -37,13 +87,14 @@ function RatingWidget() {
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
-              onClick={() => setStars(star)}
-              onMouseEnter={() => setHovered(star)}
+              onClick={() => { if (!submitted) setStars(star); }}
+              onMouseEnter={() => { if (!submitted) setHovered(star); }}
               onMouseLeave={() => setHovered(0)}
               title={`${star} star${star > 1 ? 's' : ''}`}
+              disabled={submitted}
               style={{
                 fontSize: '26px', background: 'none', border: 'none',
-                cursor: 'pointer', transition: 'transform 0.15s',
+                cursor: submitted ? 'default' : 'pointer', transition: 'transform 0.15s',
                 transform: (hovered >= star || stars >= star) ? 'scale(1.2)' : 'scale(1)',
                 filter: (hovered >= star || stars >= star) ? 'none' : 'grayscale(1)',
               }}
@@ -51,12 +102,89 @@ function RatingWidget() {
               ⭐
             </button>
           ))}
-          {stars > 0 && (
+          {stars > 0 && !submitted && (
             <span style={{ marginLeft: '8px', fontSize: '13px', fontWeight: 700, color: '#001f3f' }}>
               {stars === 5 ? 'Amazing! 🎉' : stars >= 3 ? 'Thanks! 😊' : "Got it, I'll improve! 🙏"}
             </span>
           )}
         </div>
+      </div>
+
+      {/* Submit button */}
+      {!submitted && (thumbed || stars > 0) && (
+        <button
+          onClick={handleSubmit}
+          style={{
+            marginTop: '16px', padding: '8px 20px', borderRadius: '999px',
+            backgroundColor: '#001f3f', color: '#FFB81C', fontWeight: 800,
+            fontSize: '13px', border: 'none', cursor: 'pointer',
+            letterSpacing: '0.04em', transition: 'opacity 0.2s',
+          }}
+          onMouseOver={e => (e.currentTarget.style.opacity = '0.85')}
+          onMouseOut={e => (e.currentTarget.style.opacity = '1')}
+        >
+          Submit Rating
+        </button>
+      )}
+
+      {submitted && (
+        <p style={{ marginTop: '12px', fontSize: '13px', color: '#22c55e', fontWeight: 700 }}>
+          ✅ Your rating has been recorded — thank you!
+        </p>
+      )}
+
+      {/* Live community stats */}
+      <div style={{
+        marginTop: '20px', padding: '14px 16px', borderRadius: '12px',
+        backgroundColor: '#f8fafc', border: '1px solid #e2e8f0',
+        display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap',
+      }}>
+        {loading ? (
+          <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600 }}>Loading stats…</span>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '20px' }}>👍</span>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: 900, color: '#001f3f', lineHeight: 1 }}>
+                  {thumbsCount ?? 0}
+                </div>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                  found it helpful
+                </div>
+              </div>
+            </div>
+
+            <div style={{ width: '1px', height: '36px', backgroundColor: '#e2e8f0' }} />
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '20px' }}>⭐</span>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: 900, color: '#001f3f', lineHeight: 1 }}>
+                  {avgStar ?? '—'}
+                  {avgStar && <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>/5</span>}
+                </div>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                  avg rating
+                </div>
+              </div>
+            </div>
+
+            <div style={{ width: '1px', height: '36px', backgroundColor: '#e2e8f0' }} />
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '20px' }}>🧑‍🎓</span>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: 900, color: '#001f3f', lineHeight: 1 }}>
+                  {totalRaters ?? 0}
+                </div>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                  total raters
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
@@ -136,7 +264,7 @@ export default function AboutPage() {
           </div>
           <div className="pl-12 space-y-4">
             <p className="text-muted-foreground leading-relaxed text-[15px]">
-              When I&apos;m not coding, I make videos! You can check out my YouTube channel below.
+              I also make videos when I have time! You can check out my YouTube channel below.
             </p>
             <a
               href="https://www.youtube.com/@ViyanRavi"
